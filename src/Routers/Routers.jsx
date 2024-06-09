@@ -16,7 +16,7 @@ export const Routers = () => {
             <Route index element={<PrayerTimes />} />
             <Route path="/azkar" element={<Azkar />} />
             <Route path="/quran" element={<Quran />} />
-            <Route path="/quran/:surah" element={<Surah />} />
+            <Route path="/quran/:surahId" element={<Surah />} />
           </Routes>
         </div>
       </div>

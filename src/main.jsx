@@ -4,11 +4,17 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import "./i18n";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+// تهيئة QueryClient
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </QueryClientProvider>
   </BrowserRouter>
 );
