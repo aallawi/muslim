@@ -10,7 +10,7 @@ export const Routers = () => {
   return (
     <>
       <Header />
-      <div className="max-w-[1900px] bg-body mx-auto relative overflow-hidden">
+      <div className="max-w-[1200px] mx-auto bg-body relative overflow-hidden">
         <div className="container mx-auto">
           <Routes>
             <Route index element={<PrayerTimes />} />
