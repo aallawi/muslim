@@ -35,7 +35,10 @@ export default function Header() {
 
           <div className="flex items-center justify-center gap-5 cursor-pointer xl:hidden">
             {i18n.language == "en" ? (
-              <button className="lang" onClick={() => changeLanguage("ar")}>
+              <button
+                className="lang textAra font-[700]"
+                onClick={() => changeLanguage("ar")}
+              >
                 عربي
               </button>
             ) : (
@@ -64,8 +67,8 @@ export default function Header() {
           <p className="cursor-pointer" onClick={() => navigate("/quran")}>
             {t("Quran")}
           </p>
-          <p className="cursor-pointer" onClick={() => navigate("/azkar")}>
-            {t("Azkar")}
+          <p className="cursor-pointer" onClick={() => navigate("/adhkar")}>
+            {t("Adhkar")}
           </p>
         </nav>
       </div>

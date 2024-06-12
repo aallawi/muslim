@@ -7,5 +7,14 @@
 
 .textAra {
     font-family: "Amiri", serif;
+    direction: rtl;
+    text-align: right;
 }
 
+.Background {
+    /* background-image: url("./assets/Background1.png"); */
+    /* background-repeat: repeat; */
+    /* height: 100%; */
+    /* background-position: center; */
+    /* background-size: cover; */
+}

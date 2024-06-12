@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import PrayerTimes from "../pages/PrayerTimes";
-import Azkar from "../pages/Azkar";
+import Adhkar from "../pages/Adhkar";
 import Quran from "../pages/Quran";
 import Surah from "../pages/Surah";
 import Header from "../components/Header";
@@ -8,19 +8,19 @@ import Footer from "../components/Footer";
 
 export const Routers = () => {
   return (
-    <>
+    <div className="min-h-screen">
       <Header />
       <div className="max-w-[1200px] mx-auto bg-body relative overflow-hidden">
         <div className="container mx-auto">
           <Routes>
             <Route index element={<PrayerTimes />} />
-            <Route path="/azkar" element={<Azkar />} />
+            <Route path="/adhkar" element={<Adhkar />} />
             <Route path="/quran" element={<Quran />} />
             <Route path="/quran/:surahId" element={<Surah />} />
           </Routes>
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };

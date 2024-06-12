@@ -1,7 +1,7 @@
 {
   "Muslim": "Muslim",
   "Quran": "Quran",
-  "Azkar": "Azkar",
+  "Adhkar": "Adhkar",
   "prayer-times": "Prayer Times",
   "next-prayer": "The next prayer is : ",
   "remaining-time": "The remaining time is : ",
@@ -18,5 +18,8 @@
   "The-narrated": "[narrated by Muslim]",
   "Meccan": "Meccan",
   "Medinan": "Medinan",
-  "Ayahs": "Ayahs"
+  "Ayahs": "Ayahs",
+
+  "Times": "Times",
+  "the-dhikr-display": "Choose the dhikr you want to display"
 }
