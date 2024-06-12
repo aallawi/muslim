@@ -5,12 +5,13 @@ import Quran from "../pages/Quran";
 import Surah from "../pages/Surah";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ScrollToTop from "../components/ScrollToTop";
 
 export const Routers = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <div className="max-w-[1200px] mx-auto bg-body relative overflow-hidden">
+      <div className="max-w-[1200px] mx-auto relative overflow-hidden">
         <div className="container mx-auto">
           <Routes>
             <Route index element={<PrayerTimes />} />
@@ -20,6 +21,7 @@ export const Routers = () => {
           </Routes>
         </div>
       </div>
+      <ScrollToTop />
       <Footer />
     </div>
   );

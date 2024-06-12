@@ -12,7 +12,7 @@ function App() {
   }, [currentLanguage]);
 
   return (
-    <div className=" bg-body">
+    <div className="Background">
       <Routers />
     </div>
   );

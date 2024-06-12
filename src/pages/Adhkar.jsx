@@ -4,6 +4,7 @@ import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import DuaaAdhar from "../assets/duaa-adhkar.png";
 import Done from "../assets/done.svg";
+import Choose from "../assets/choose.svg";
 
 const Adhkar = () => {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ const Adhkar = () => {
     counters[id] >= ehikr.array.find((item) => item.id === id).count;
 
   return (
-    <div className="pt-[100px]">
+    <div className="pt-[100px] mx-[10px] md:mx-0">
       {/* banner */}
       <div className="flex items-center justify-center mb-[40px]">
         {currentLanguage == "en" ? (
@@ -54,7 +55,9 @@ const Adhkar = () => {
             alt="Duaa And Adhkar"
           />
         ) : (
-          <p className="text-[40px] font-[800]">دعـــــــاء وأذكـــــــــار</p>
+          <p className="text-[40px] font-[800]">
+            أدعـيـــــــــة وأذكـــــــــار
+          </p>
         )}
       </div>
 
@@ -67,9 +70,9 @@ const Adhkar = () => {
               onClick={() => setIdSelected(item.id)}
               className={`${
                 item.id === idSelected
-                  ? "bg-primary text-black active"
-                  : "bg-secondary"
-              } hover:bg-primary text-white min-h-[60px] rounded-md py-[10px] px-[10px] text-center select-none`}
+                  ? "bg-primary text-black font-[700]"
+                  : "bg-secondary text-white"
+              } hover:bg-primary min-h-[60px] rounded-md py-[10px] px-[10px] text-center select-none`}
             >
               {currentLanguage === "en" ? item.categoryEng : item.category}
             </button>
@@ -79,22 +82,26 @@ const Adhkar = () => {
 
       {/* The chosen dhkar */}
       {ehikr ? (
-        <div className="my-[40px] border-secondary border-solid border-[2px] rounded-[10px]">
-          <h2 className="Background text-center font-[600] py-[10px] text-[30px] border-secondary border-solid border-b-[2px]">
+        <div className="my-[40px] border-secondary border-solid border-[2px] rounded-[10px] overflow-hidden">
+          <h2 className="text-center font-[600] py-[10px] text-[30px] bg-primary border-secondary border-solid border-b-[2px]">
             {currentLanguage === "en" ? ehikr.categoryEng : ehikr.category}
           </h2>
           <div>
             {ehikr.array.map((item, index) => (
               <div
                 key={index}
-                className={`p-[10px] text-[25px] flex gap-[20px] items-center leading-[55px] border-secondary border-solid border-b ${
+                className={`p-[10px] text-[25px] flex items-stretch gap-[20px] leading-[55px] border-secondary border-solid border-b-[2px] ${
                   isCompleted(item.id) ? "bg-green-500" : ""
                 }`}
               >
                 {/* counter */}
                 <div
                   onClick={() => increaseCounter(item.id)}
-                  className="flex flex-col justify-center items-center cursor-pointer w-[80px] select-none"
+                  className={`${
+                    currentLanguage == "en"
+                      ? "border-r pr-[10px]"
+                      : "border-l pl-[10px]"
+                  } flex flex-col justify-center items-center cursor-pointer w-[90px] select-none border-solid border-[#c1c1c1]`}
                 >
                   <p className="w-[60px] h-[60px] text-[25px] text-center font-[600] bg-primary text-secondary rounded-full">
                     {item.count}
@@ -111,8 +118,10 @@ const Adhkar = () => {
                 </div>
 
                 {/* text */}
-                <p className="flex-1 text-secondary">
-                  <p className="textAra rtl pr-[15px]">{item.text}</p>
+                <p className="flex flex-col items-center flex-1 text-secondary">
+                  <p className="textAra rtl pr-[10px] text-right">
+                    {item.text}
+                  </p>
                   <p>{currentLanguage === "en" && item.textEng}</p>
                 </p>
               </div>
@@ -120,9 +129,14 @@ const Adhkar = () => {
           </div>
         </div>
       ) : (
-        <p className="text-center text-[25px] my-[100px]">
-          {t("the-dhikr-display")}
-        </p>
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-[25px] my-[30px]">{t("the-dhikr-display")}</p>
+          <img
+            src={Choose}
+            className="w-[400px]"
+            alt={t("the-dhikr-display")}
+          />
+        </div>
       )}
     </div>
   );

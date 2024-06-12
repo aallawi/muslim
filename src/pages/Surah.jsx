@@ -27,6 +27,7 @@ const Surah = () => {
     }
   };
 
+  // useQuery
   const { data, error, isLoading, isError } = useQuery(
     ["surah", surahId],
     fetchOneSurah
@@ -49,8 +50,6 @@ const Surah = () => {
     return ayahText.replace(regex, "");
   };
 
-  console.log(data);
-
   return (
     <div className="pt-[100px] m-[12px]">
       <div className="flex flex-col justify-center">
@@ -70,7 +69,7 @@ const Surah = () => {
         </div>
 
         {/* besmAllah */}
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center select-none">
           {data.dataAra.number === 1 ? (
             <div
               className={`${
@@ -131,7 +130,7 @@ const Surah = () => {
                 </div>
 
                 {/* number */}
-                <div className="relative min-w-[60px] mb-[10px]">
+                <div className="relative min-w-[60px] mb-[10px] select-none">
                   <img
                     className="w-[60px] h-[60px]"
                     src={AyahImg}
