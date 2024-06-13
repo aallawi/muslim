@@ -58,18 +58,13 @@ const Quran = () => {
           <li
             key={surah.number}
             onClick={() => navigate(`/quran/${surah.number}`)}
-            className="group hover:border-primary border-solid border-[1px] font-[600] p-[10px] m-[10px] flex items-center justify-between rounded-[6px] cursor-pointer"
+            className="group hover:border-primary border-solid border-secondary text-secondary border-[1px] font-[600] p-[10px] m-[10px] flex items-center justify-between gap-[20px] rounded-[6px] cursor-pointer"
           >
             {/* number */}
-            <div
-              className={`${
-                currentLanguage == "en" ? "mr-[30px]" : "ml-[30px]"
-              }`}
-            >
-              <p className="flex items-center justify-center  w-[50px] h-[50px] rounded-[6px] group-hover:bg-primary group-hover:text-white rotate-45">
-                <span className="-rotate-45">{surah.number}</span>
-              </p>
-            </div>
+
+            <p className="flex items-center justify-center  w-[50px] h-[50px] rounded-[6px] group-hover:bg-primary group-hover:text-white rotate-45">
+              <span className="-rotate-45">{surah.number}</span>
+            </p>
 
             {/* text */}
             <div className="flex items-center justify-between flex-1">
@@ -89,7 +84,7 @@ const Quran = () => {
                   </h2>
                 </div>
               )}
-              <div className="text-[18px]">
+              <div className="text-[18px] group-hover:text-primary">
                 <p>{t(surah.revelationType)}</p>
                 <p>
                   {surah.ayahs.length} {t("Ayahs")}

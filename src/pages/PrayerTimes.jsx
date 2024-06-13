@@ -25,18 +25,18 @@ const PrayerTimes = () => {
   console.log(data?.[day]);
 
   const monthsArabic = [
-    "يناير",
-    "فبراير",
-    "مارس",
-    "أبريل",
-    "مايو",
-    "يونيو",
-    "يوليو",
-    "أغسطس",
-    "سبتمبر",
-    "أكتوبر",
-    "نوفمبر",
-    "ديسمبر",
+    "ينـايــر",
+    "فبـرايـر",
+    "مــــارس",
+    "أبريـــل",
+    "مايــــو",
+    "يونـيــو",
+    "يوليـــو",
+    "أغسطـــس",
+    "سبتمبــر",
+    "أكتوبــر",
+    "نوفمبــر",
+    "ديسمبــر",
   ];
 
   // Set geolocation coordinates
@@ -106,7 +106,7 @@ const PrayerTimes = () => {
         <h2 className="mb-[30px] text-center text-[40px] font-[700]">
           {t("prayer-times")}
         </h2>
-        <div className="flex justify-around font-[600] text-[18px]">
+        <div className="flex justify-around font-[600] text-[18px] mb-[40px]">
           {/* city - day */}
           <div className="">
             <h2 className="mb-[15px]">
@@ -176,18 +176,18 @@ const PrayerTimes = () => {
         </div>
 
         {/* prayer times */}
-        <div className="flex-1 px-[20px] py-[16px] bg-yellow-200 rounded-[6px] w-[80%] max-w-[500px]">
-          <div className="flex justify-between font-[700] text-[18px] pb-[16px] border-b-[2px] border-white">
+        <div className="flex-1 py-[16px] bg-primary text-secondary rounded-[6px] w-[80%] max-w-[500px]">
+          <div className="flex px-[20px] justify-between font-[700] text-[18px] pb-[16px] border-b-[2px] border-secondary">
             <div className="">{t("name-of-salat")}</div>
             <div className="">{t("azan-time")}</div>
           </div>
           {prayerTimes.map((time, index) => (
             <div
               key={index}
-              className={`flex justify-between font-[700] text-[16px]  ${
+              className={`flex justify-between font-[700] text-[16px] px-[20px] ${
                 index === prayerTimes.length - 1
                   ? "pt-[12px]"
-                  : "py-[12px] border-b-[2px] border-dashed border-white"
+                  : "py-[12px] border-b border-solid border-secondary"
               }`}
             >
               <div>{t(Object.keys(time)[0])}</div>

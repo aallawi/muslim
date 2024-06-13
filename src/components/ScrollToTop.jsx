@@ -27,9 +27,9 @@ const ScrollToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className={`${
-            currentLanguage == "en" ? "left-[30px]" : "right-[30px]"
-          } "fixed bottom-[30px] h-[50px] w-[50px] rounded-full border-none cursor-pointer animate-bounce"`}
+          className={`fixed bottom-[30px] h-[50px] w-[50px] rounded-full border-none cursor-pointer animate-bounce ${
+            currentLanguage === "en" ? "left-[30px]" : "right-[30px]"
+          }`}
         >
           <img src={arrowTop} alt="Scroll to top" className="w-full h-full" />
         </button>
