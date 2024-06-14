@@ -61,7 +61,7 @@ const Footer = () => {
       <div className="max-w-[1200px] mx-auto">
         <div className="flex flex-wrap justify-center xl:items-stretch flex-row items-center xl:justify-start gap-[20px] p-[20px]">
           {/* logo */}
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between flex-1">
             {/* muslim */}
             <div className="flex gap-[25px]">
               <a href="/" className="flex flex-col items-center cursor-pointer">
@@ -142,7 +142,7 @@ const Footer = () => {
           <form
             ref={formSubmit}
             onSubmit={sendToEmail}
-            className="h-full flex flex-col gap-[10px] w-full max-w-[500px]"
+            className="h-full flex flex-col gap-[10px] w-full max-w-[500px] flex-1"
           >
             <h2 className="font-[800] mb-[10px] text-[20px] border-black border-b border-solid w-fit">
               {t("Contact-us")}

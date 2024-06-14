@@ -9,16 +9,28 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [show, setShow] = useState("show");
+  const [show, setShow] = useState("top");
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
 
-  // التحكم في عرض شريط التنقل بناءً على التمرير
+  const changePath = (path) => {
+    navigate(`${path}`);
+    setMobileMenu(false),
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+  };
+
   const controlNavbar = useCallback(() => {
-    if (window.scrollY > lastScrollY && !mobileMenu) {
-      setShow("hide");
+    if (window.scrollY > 200) {
+      if (window.scrollY > lastScrollY && !mobileMenu) {
+        setShow("hide");
+      } else {
+        setShow("show");
+      }
     } else {
-      setShow("show");
+      setShow("top");
     }
     setLastScrollY(window.scrollY);
   }, [lastScrollY, mobileMenu]);
@@ -43,7 +55,14 @@ const Header = () => {
   return (
     <header
       className={`fixed w-full h-[60px] z-[99] transition-all duration-1000 select-none bg-white text-secondary shadow-md ${
-        show === "hide" && "translate-y-[-60px]"
+        // show === "hide" && "translate-y-[-60px]"
+        show === "top"
+          ? "bg-white"
+          : show === "show"
+          ? "bg-white"
+          : show === "hide"
+          ? "translate-y-[-60px]"
+          : ""
       }`}
     >
       <div className="w-full max-w-[1200px] mx-auto px-[10px] flex justify-between items-center">
@@ -68,7 +87,7 @@ const Header = () => {
             className={`mx-[15px] font-[800] cursor-pointer text-[20px] ${isActive(
               "/"
             )}`}
-            onClick={() => navigate("/")}
+            onClick={() => changePath("/")}
           >
             {t("prayer-times")}
           </li>
@@ -76,7 +95,7 @@ const Header = () => {
             className={`mx-[15px] font-[800] cursor-pointer text-[20px] ${isActive(
               "/quran"
             )}`}
-            onClick={() => navigate("/quran")}
+            onClick={() => changePath("/quran")}
           >
             {t("Quran")}
           </li>
@@ -84,7 +103,7 @@ const Header = () => {
             className={`mx-[15px] font-[800] cursor-pointer text-[20px] ${isActive(
               "/adhkar"
             )}`}
-            onClick={() => navigate("/adhkar")}
+            onClick={() => changePath("/adhkar")}
           >
             {t("Adhkar")}
           </li>

@@ -27,6 +27,14 @@ const Quran = () => {
     return <div>Error: {error.message}</div>;
   }
 
+  const changePath = (number) => {
+    navigate(`/quran/${number}`);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="pt-[100px]">
       <div className="max-w-[700px] md:mx-auto mx-3 mb-[30px]">
@@ -57,7 +65,7 @@ const Quran = () => {
         {data?.map((surah) => (
           <li
             key={surah.number}
-            onClick={() => navigate(`/quran/${surah.number}`)}
+            onClick={() => changePath(surah.number)}
             className="group hover:border-primary border-solid border-secondary text-secondary border-[1px] font-[600] p-[10px] m-[10px] flex items-center justify-between gap-[20px] rounded-[6px] cursor-pointer"
           >
             {/* number */}

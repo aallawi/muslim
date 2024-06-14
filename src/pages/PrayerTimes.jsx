@@ -60,7 +60,7 @@ const PrayerTimes = () => {
   useEffect(() => {
     axios
       .get(
-        `http://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}`
+        `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}`
       )
       .then((response) => {
         const result = response.data;

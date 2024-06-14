@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import allAdhkar from "../allAdhkar";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import Done from "../assets/done.svg";
 import Choose from "../assets/choose.svg";
 
 const Adhkar = () => {
+  const sectionRef = useRef(null);
   const { t } = useTranslation();
   const currentLanguage = i18next.language;
 
@@ -28,6 +29,12 @@ const Adhkar = () => {
     }
   }, [ehikr]);
 
+  useEffect(() => {
+    if (ehikr) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [ehikr]);
+
   const increaseCounter = (id) => {
     setCounters((prevCounters) => {
       const newCount = prevCounters[id] + 1;
@@ -39,6 +46,10 @@ const Adhkar = () => {
       }
       return prevCounters;
     });
+  };
+
+  const ChooseEhikr = (id) => {
+    setIdSelected(id);
   };
 
   const isCompleted = (id) =>
@@ -67,12 +78,12 @@ const Adhkar = () => {
           return (
             <button
               key={index}
-              onClick={() => setIdSelected(item.id)}
+              onClick={() => ChooseEhikr(item.id)}
               className={`${
                 item.id === idSelected
                   ? "bg-primary text-black font-[700]"
                   : "bg-secondary text-white"
-              } hover:bg-primary min-h-[60px] rounded-md py-[10px] px-[10px] text-center select-none`}
+              } hover:bg-primary min-h-[60px] rounded-md p-[10px] text-center select-none`}
             >
               {currentLanguage === "en" ? item.categoryEng : item.category}
             </button>
@@ -82,7 +93,10 @@ const Adhkar = () => {
 
       {/* The chosen dhkar */}
       {ehikr ? (
-        <div className="my-[40px] border-secondary border-solid border-[2px] rounded-[10px] overflow-hidden">
+        <div
+          ref={sectionRef}
+          className="my-[40px] border-secondary border-solid border-[2px] rounded-[10px] overflow-hidden"
+        >
           <h2 className="text-center font-[600] py-[10px] text-[30px] bg-primary border-secondary border-solid border-b-[2px]">
             {currentLanguage === "en" ? ehikr.categoryEng : ehikr.category}
           </h2>
@@ -118,7 +132,7 @@ const Adhkar = () => {
                 </div>
 
                 {/* text */}
-                <p className="flex flex-col items-center flex-1 text-secondary">
+                <p className="flex flex-col items-center justify-center flex-1 text-secondary">
                   <p className="textAra rtl pr-[10px] text-right">
                     {item.text}
                   </p>
