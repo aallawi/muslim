@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CgMenu, CgClose } from "react-icons/cg";
 import { useTranslation } from "react-i18next";
 import kaaba from "../assets/logo.png";
+import { IoIosRadio } from "react-icons/io";
 
 const Header = () => {
   const { t, i18n } = useTranslation();
@@ -106,6 +107,15 @@ const Header = () => {
             onClick={() => changePath("/adhkar")}
           >
             {t("Adhkar")}
+          </li>
+          <li
+            className={`flex justify-center items-center gap-1 mx-[15px] font-[800] cursor-pointer text-[20px] ${isActive(
+              "/radio"
+            )}`}
+            onClick={() => changePath("/radio")}
+          >
+            {t("Radio")}
+            <IoIosRadio size={20} />
           </li>
           <li
             className={`${

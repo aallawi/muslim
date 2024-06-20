@@ -4,6 +4,7 @@ import axios from "axios";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
+import { PuffLoader } from "react-spinners";
 
 const Quran = () => {
   const navigate = useNavigate();
@@ -20,7 +21,11 @@ const Quran = () => {
   const { data, error, isLoading, isError } = useQuery("surahs", fetchSurahs);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen mx-auto">
+        <PuffLoader color="#38bdf8" size={100} speedMultiplier={3} />
+      </div>
+    );
   }
 
   if (isError) {

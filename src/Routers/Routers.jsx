@@ -6,6 +6,7 @@ import Surah from "../pages/Surah";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
+import Radio from "../pages/Radio";
 
 export const Routers = () => {
   return (
@@ -18,6 +19,7 @@ export const Routers = () => {
             <Route path="/adhkar" element={<Adhkar />} />
             <Route path="/quran" element={<Quran />} />
             <Route path="/quran/:surahId" element={<Surah />} />
+            <Route path="/radio" element={<Radio />} />
           </Routes>
         </div>
       </div>

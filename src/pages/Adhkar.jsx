@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import DuaaAdhar from "../assets/duaa-adhkar.png";
 import Done from "../assets/done.svg";
 import Choose from "../assets/choose.svg";
+import AudioPlayer from "../components/AudioPlayer";
 
 const Adhkar = () => {
   const sectionRef = useRef(null);
@@ -18,6 +19,11 @@ const Adhkar = () => {
   useEffect(() => {
     setEhikr(allAdhkar.find((category) => category.id === idSelected));
   }, [idSelected]);
+
+  const [playing, setPlaying] = useState(null);
+  const handlePlay = (src) => {
+    setPlaying((prevPlaying) => (prevPlaying === src ? null : src));
+  };
 
   useEffect(() => {
     const initialCounters = {};
@@ -36,6 +42,7 @@ const Adhkar = () => {
   }, [ehikr]);
 
   const increaseCounter = (id) => {
+    console.log("id", id);
     setCounters((prevCounters) => {
       const newCount = prevCounters[id] + 1;
       if (ehikr.array.find((item) => item.id === id).count >= newCount) {
@@ -115,20 +122,33 @@ const Adhkar = () => {
                     currentLanguage == "en"
                       ? "border-r pr-[10px]"
                       : "border-l pl-[10px]"
-                  } flex flex-col justify-center items-center cursor-pointer w-[90px] select-none border-solid border-[#c1c1c1]`}
+                  } flex flex-col gap-[20px] justify-center items-center cursor-pointer w-[90px] select-none border-solid border-[#c1c1c1]`}
                 >
-                  <p className="w-[60px] h-[60px] text-[25px] text-center font-[600] bg-primary text-secondary rounded-full">
-                    {item.count}
-                  </p>
-                  {isCompleted(item.id) ? (
-                    <div className="w-[50px] mt-[10px]">
-                      <img src={Done} sizes="20" />
-                    </div>
-                  ) : (
-                    <p className="text-[20px] font-[500]">
-                      {counters[item.id] || 0} {t("Times")}
+                  <div>
+                    <p className="w-[60px] h-[60px] text-[25px] text-center font-[600] bg-primary text-secondary rounded-full">
+                      {item.count}
                     </p>
-                  )}
+                    {isCompleted(item.id) ? (
+                      <div className="w-[50px] mt-[10px]">
+                        <img src={Done} sizes="20" />
+                      </div>
+                    ) : (
+                      <p className="text-[20px] font-[500]">
+                        {counters[item.id] || 0} {t("Times")}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="sound">
+                    {item.audio && (
+                      <AudioPlayer
+                        sound={item.audio}
+                        isPlaying={playing === item.audio}
+                        onPlay={() => handlePlay(item.audio)}
+                        repeatCount={item.count}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {/* text */}
