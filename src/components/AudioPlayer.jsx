@@ -1,7 +1,14 @@
 import { useRef, useEffect, useState } from "react";
 import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 
-const AudioPlayer = ({ sound, isPlaying, onPlay, repeatCount }) => {
+const AudioPlayer = ({
+  sound,
+  isPlaying,
+  onPlay,
+  onEnd,
+  repeatCount,
+  increaseCounter,
+}) => {
   const audioRef = useRef();
   const [playCount, setPlayCount] = useState(0);
 
@@ -10,37 +17,37 @@ const AudioPlayer = ({ sound, isPlaying, onPlay, repeatCount }) => {
     audio.volume = 0.5;
 
     const handleEnded = () => {
+      increaseCounter(); // استدعاء increaseCounter بعد كل تشغيل
       if (playCount < repeatCount - 1) {
         setPlayCount((prevCount) => prevCount + 1);
         audio.play();
       } else {
         setPlayCount(0);
         onPlay(null);
+        onEnd(); // استدعاء onEnd بعد الانتهاء من جميع التكرارات
       }
     };
 
     audio.addEventListener("ended", handleEnded);
-
-    if (isPlaying) {
-      audio.play();
-    } else {
-      audio.pause();
-      audio.removeEventListener("ended", handleEnded);
-    }
-
     return () => {
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [isPlaying, playCount, repeatCount, onPlay]);
+  }, [playCount, repeatCount, onPlay, onEnd, increaseCounter]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying]);
 
   return (
-    <div className="app-container">
+    <div>
       <audio ref={audioRef} src={sound}></audio>
-      {isPlaying ? (
-        <FaPauseCircle size={30} onClick={onPlay} />
-      ) : (
-        <FaPlayCircle size={30} onClick={onPlay} />
-      )}
+      <button onClick={onPlay}>
+        {isPlaying ? <FaPauseCircle size={30} /> : <FaPlayCircle size={30} />}
+      </button>
     </div>
   );
 };

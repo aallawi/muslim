@@ -209,7 +209,7 @@ const allAdhkar = [
         text: "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ ، عَلَيْكَ تَوَكَّلْتُ ، وَأَنْتَ رَبُّ الْعَرْشِ الْعَظِيمِ , مَا شَاءَ اللَّهُ كَانَ ، وَمَا لَمْ يَشَأْ لَمْ يَكُنْ ، وَلا حَوْلَ وَلا قُوَّةَ إِلا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ , أَعْلَمُ أَنَّ اللَّهَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ ، وَأَنَّ اللَّهَ قَدْ أَحَاطَ بِكُلِّ شَيْءٍ عِلْمًا , اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي ، وَمِنْ شَرِّ كُلِّ دَابَّةٍ أَنْتَ آخِذٌ بِنَاصِيَتِهَا ، إِنَّ رَبِّي عَلَى صِرَاطٍ مُسْتَقِيمٍ",
         textEng:
           "O Allah, You are my Lord, there is no deity except You. I have placed my trust in You, and You are the Lord of the Mighty Throne. Whatever Allah wills happens, and whatever He does not will does not happen. There is no power and no strength except with Allah, the Exalted, the Great. I know that Allah is capable of all things and that Allah encompasses all things in knowledge. O Allah, I seek refuge in You from the evil of myself and from the evil of every creature that You have control over. Indeed, my Lord is on a straight path.",
-        count: 3,
+        count: 1,
         audio: audio19,
       },
       {
@@ -233,7 +233,7 @@ const allAdhkar = [
         text: "((يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ)).",
         textEng:
           "O Ever-Living, O Sustainer, in Your mercy I seek relief, rectify all my affairs, and do not leave me to myself even for the blink of an eye.",
-        count: 1,
+        count: 3,
         audio: audio22,
       },
       {
@@ -685,7 +685,7 @@ const allAdhkar = [
         id: 3,
         text: "((اللَّهُمَّ لاَ مَانِعَ لِمَا أَعْطَيْتَ، وَلاَ مُعْطِيَ لِمَا مَنَعْتَ، وَلاَ يَنْفَعُ ذَا الْجَدِّ مِنْكَ الجَدُّ)).",
         textEng:
-          "There is no god but Allah, alone, without partner. To Him belongs the dominion, and to Him is the praise, and He is able to do all things (three times). O Allah, none can withhold what You give, and none can give what You withhold, and no wealth or majesty can benefit anyone, as from You is all wealth and majesty.",
+          "O Allah, none can withhold what You give, and none can give what You withhold, and no wealth or majesty can benefit anyone, as from You is all wealth and majesty.",
         count: 1,
         audio: audio47,
       },
