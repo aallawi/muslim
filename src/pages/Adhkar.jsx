@@ -139,14 +139,16 @@ const Adhkar = () => {
         >
           <div className="h-[70px] text-center font-[600] py-[10px] text-[30px] bg-primary border-secondary border-solid border-b-[2px] relative">
             {currentLanguage === "en" ? ehikr.categoryEng : ehikr.category}
-            <button
-              onClick={handleAutoStart}
-              className={`${
-                currentLanguage == "en" ? "left-0" : "right-0"
-              } absolute bottom-0 w-[150px] h-[70px] text-[22px] font-[700] bg-indigo-400 px-[15px] cursor-pointer flex justify-center items-center`}
-            >
-              {t("Auto-start")}
-            </button>
+            {ehikr.array[0].audio && (
+              <button
+                onClick={handleAutoStart}
+                className={`${
+                  currentLanguage == "en" ? "left-[10px]" : "right-[10px]"
+                } absolute bottom-[15px] w-fit h-[40px] text-[20px] font-[600] bg-indigo-400 rounded-[15px] px-[20px] cursor-pointer flex justify-center items-center`}
+              >
+                {t("Auto-play")}
+              </button>
+            )}
           </div>
           <div>
             {ehikr.array.map((item, index) => (
