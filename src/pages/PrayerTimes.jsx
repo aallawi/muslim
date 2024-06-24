@@ -2,42 +2,54 @@ import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import axios from "axios";
-import childPray from "../assets/child-pray.webp";
+import childPray from "../assets/images/child-pray.webp";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import allMethod from "../assets/data/allMethod";
 
 const PrayerTimes = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const currentLanguage = i18next.language;
 
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
-  const day = currentDate.getDate() - 1; // عشان الاندكس
-  // const month = 6;
-  // const day = 16;
+  const day = currentDate.getDate() - 1; // لأن الاندكس يبدأ من 0
 
-  const [latitude, setLatitude] = useState(21.42251);
-  const [longitude, setLongitude] = useState(39.826168);
+  const [latitude, setLatitude] = useState(localStorage.getItem("latitude"));
+  const [longitude, setLongitude] = useState(localStorage.getItem("longitude"));
+  const [method, setMethod] = useState(null); // تم تعديل القيمة الافتراضية إلى null
+  const [city, setCity] = useState(localStorage.getItem("selectedCity"));
   const [data, setData] = useState(null);
   const [allTimes, setAllTimes] = useState({});
   const [holiday, setHoliday] = useState("");
-  // const [nextPrayer, setNextPrayer] = useState("Asr");
-  // const [timeRemaining, setTimeRemaining] = useState("3H 33mins");
-  console.log(data?.[day]);
 
   const monthsArabic = [
-    "ينـايــر",
-    "فبـرايـر",
-    "مــــارس",
-    "أبريـــل",
-    "مايــــو",
-    "يونـيــو",
-    "يوليـــو",
-    "أغسطـــس",
-    "سبتمبــر",
-    "أكتوبــر",
-    "نوفمبــر",
-    "ديسمبــر",
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو",
+    "يونيو",
+    "يوليو",
+    "أغسطس",
+    "سبتمبر",
+    "أكتوبر",
+    "نوفمبر",
+    "ديسمبر",
   ];
+
+  const allOptions = useMemo(() => {
+    return allMethod.map((method) => ({
+      value: method.value,
+      label: currentLanguage === "en" ? method.labelEn : method.labelAr,
+    }));
+  }, [allMethod, currentLanguage]);
+
+  const HandelSelectedMethod = (selectedOption) => {
+    setMethod(selectedOption.value);
+  };
 
   // Set geolocation coordinates
   useEffect(() => {
@@ -58,19 +70,22 @@ const PrayerTimes = () => {
 
   // Fetch city data
   useEffect(() => {
-    axios
-      .get(
-        `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}`
-      )
-      .then((response) => {
-        const result = response.data;
-        setData(result.data);
-        setAllTimes(result.data[day].timings);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, [year, month, latitude, longitude, day]);
+    if (latitude && longitude && method) {
+      axios
+        .get(
+          `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${method}`
+        )
+        .then((response) => {
+          const result = response.data;
+          setData(result.data);
+          setAllTimes(result.data[day].timings);
+          setCity(data[day].meta.timezone.replace(/^[^/]+\//, ""));
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    }
+  }, [year, month, latitude, longitude, day, method]);
 
   // Convert time to "hh:mm AM/PM" format
   const convertTimeFormat = (time) => {
@@ -82,15 +97,15 @@ const PrayerTimes = () => {
     return `${formattedHour}:${minute.split(" ")[0]} ${suffix}`;
   };
 
-  // Check of Islamic holidays
+  // Check for Islamic holidays
   useEffect(() => {
-    if (data?.[day].date.hijri.holidays) {
+    if (data?.[day]?.date?.hijri?.holidays) {
       const holidays = data[day].date.hijri.holidays;
       if (holidays.length > 0) {
         setHoliday(holidays.join(" - "));
       }
     }
-  });
+  }, [data, day]);
 
   // Use useMemo to filter only five prayer times
   const prayerTimes = useMemo(() => {
@@ -99,6 +114,14 @@ const PrayerTimes = () => {
     }));
   }, [allTimes]);
 
+  const changePath = (path) => {
+    navigate(path);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="min-h-screen pt-[80px] overflow-hidden">
       {/* part One */}
@@ -106,14 +129,25 @@ const PrayerTimes = () => {
         <h2 className="mb-[30px] text-center text-[40px] font-[700]">
           {t("prayer-times")}
         </h2>
+        <button
+          className=" bg-green-400 p-[10px] mb-[20px] text-[23px] font-[600]"
+          onClick={() => changePath("/city")}
+        >
+          Choose the location manually
+        </button>
+        <div>
+          <Select
+            placeholder="اختر طريقة حساب أوقات الصلاة"
+            onChange={HandelSelectedMethod}
+            options={allOptions}
+          />
+        </div>
         <div className="flex justify-around font-[600] text-[18px] mb-[40px]">
           {/* city - day */}
           <div className="">
-            <h2 className="mb-[15px]">
-              {data?.[day]?.meta?.timezone.replace(/^[^/]+\//, "")}
-            </h2>
+            <h2 className="mb-[15px]">{city}</h2>
             <h2>
-              {currentLanguage == "en"
+              {currentLanguage === "en"
                 ? data?.[day]?.date?.gregorian?.weekday.en
                 : data?.[day]?.date?.hijri?.weekday.ar}
             </h2>
@@ -121,7 +155,7 @@ const PrayerTimes = () => {
           {/* date */}
           <div className="">
             <h2 className="mb-[15px]">
-              {currentLanguage == "en" ? (
+              {currentLanguage === "en" ? (
                 data?.[day]?.date?.readable
               ) : (
                 <div className="flex gap-1">
@@ -135,7 +169,7 @@ const PrayerTimes = () => {
               <span>{data?.[day]?.date?.hijri?.day}</span>
 
               <span>
-                {currentLanguage == "en"
+                {currentLanguage === "en"
                   ? data?.[day]?.date?.hijri?.month.en
                   : data?.[day]?.date?.hijri?.month.ar}
               </span>
@@ -144,7 +178,7 @@ const PrayerTimes = () => {
           </div>
         </div>
 
-        {/* holdays */}
+        {/* holidays */}
         {holiday && (
           <div className=" mt-[30px] text-center text-red-800 text-[40px] font-[600]">
             Today is {holiday}

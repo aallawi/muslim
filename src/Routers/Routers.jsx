@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 import Radio from "../pages/Radio";
+import Manually from "../pages/Manually";
 
 export const Routers = () => {
   return (
@@ -16,6 +17,7 @@ export const Routers = () => {
         <div className="container mx-auto">
           <Routes>
             <Route index element={<PrayerTimes />} />
+            <Route path="/city" element={<Manually />} />
             <Route path="/adhkar" element={<Adhkar />} />
             <Route path="/quran" element={<Quran />} />
             <Route path="/quran/:surahId" element={<Surah />} />

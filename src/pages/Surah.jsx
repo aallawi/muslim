@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import axios from "axios";
-import BesmAllah from "../assets/besm-allah.png";
-import AyahImg from "../assets/auah1.png";
+import BesmAllah from "../assets/images/besm-allah.png";
+import AyahImg from "../assets/images/auah1.png";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { PuffLoader } from "react-spinners";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import arrowTop from "../assets/arrow.svg";
+import arrowTop from "../assets/images/arrow.svg";
 import i18next from "i18next";
 
 const ScrollToTop = () => {

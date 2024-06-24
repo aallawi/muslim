@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CgMenu, CgClose } from "react-icons/cg";
 import { useTranslation } from "react-i18next";
-import kaaba from "../assets/logo.png";
+import kaaba from "../assets/images/logo.png";
 import { IoIosRadio } from "react-icons/io";
 
 const Header = () => {
@@ -115,7 +115,7 @@ const Header = () => {
             onClick={() => changePath("/radio")}
           >
             {t("Radio")}
-            <IoIosRadio size={20} />
+            <IoIosRadio color="red" size={20} />
           </li>
           <li
             className={`${

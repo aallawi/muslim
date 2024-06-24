@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import allAdhkar from "../allAdhkar";
+import allAdhkar from "../assets/data/allAdhkar";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-import DuaaAdhar from "../assets/duaa-adhkar.png";
-import Done from "../assets/done.svg";
-import Choose from "../assets/choose.svg";
+import DuaaAdhar from "../assets/images/duaa-adhkar.png";
+import Done from "../assets/images/done.svg";
+import Choose from "../assets/images/choose.svg";
 import AudioPlayer from "../components/AudioPlayer";
 
 const Adhkar = () => {

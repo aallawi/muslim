@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
-import kaaba from "../assets/logo.png";
+import kaaba from "../assets/images/logo.png";
 
 import {
   FaFacebookF,
