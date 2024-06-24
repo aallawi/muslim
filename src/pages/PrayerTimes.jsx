@@ -19,7 +19,7 @@ const PrayerTimes = () => {
 
   const [latitude, setLatitude] = useState(localStorage.getItem("latitude"));
   const [longitude, setLongitude] = useState(localStorage.getItem("longitude"));
-  const [method, setMethod] = useState(null); // تم تعديل القيمة الافتراضية إلى null
+  const [method, setMethod] = useState(localStorage.getItem("method") || 5); // تم تعديل القيمة الافتراضية إلى null
   const [city, setCity] = useState(localStorage.getItem("selectedCity"));
   const [data, setData] = useState(null);
   const [allTimes, setAllTimes] = useState({});
@@ -49,6 +49,7 @@ const PrayerTimes = () => {
 
   const HandelSelectedMethod = (selectedOption) => {
     setMethod(selectedOption.value);
+    localStorage.setItem("method", selectedOption.value);
   };
 
   // Set geolocation coordinates
@@ -133,11 +134,12 @@ const PrayerTimes = () => {
           className=" bg-green-400 p-[10px] mb-[20px] text-[23px] font-[600]"
           onClick={() => changePath("/city")}
         >
-          Choose the location manually
+          {t("Choose-the-location-manually")}
         </button>
         <div>
           <Select
-            placeholder="اختر طريقة حساب أوقات الصلاة"
+            className=" mb-[40px]"
+            placeholder={t("Choose-how-to-calculate-prayer-times")}
             onChange={HandelSelectedMethod}
             options={allOptions}
           />

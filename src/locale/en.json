@@ -5,6 +5,8 @@
   "Radio": "Live radio",
   "Radio-QK": "Quran Kareem Radio",
   "prayer-times": "Prayer Times",
+  "Choose-the-location-manually": "Choose the location manually",
+  "Choose-how-to-calculate-prayer-times": "Choose how to calculate prayer times",
   "next-prayer": "The next prayer is : ",
   "remaining-time": "The remaining time is : ",
   "name-of-salat": "Name Of Salat",
@@ -30,6 +32,9 @@
   "Contains-everything": "Muslim website contains everything a Muslim needs daily: morning remembrances, evening remembrances, the Qur’an, remembrances and supplications, and more..",
   "The-easiest-Islamic": "The easiest Islamic website that includes many features that a Muslim needs in his day",
   "Important-links": "Important links",
+
+  "Choose-your-country": "Write The Name Of Your Country",
+  "Choose-your-city": "Write The Name Of Your City",
 
   "Contact-us": "To contact us",
   "Name": "Your Full Name",
