@@ -12,6 +12,7 @@
   "name-of-salat": "Name Of Salat",
   "azan-time": "Azan Time",
   "Fajr": "Fajr",
+  "Sunrise": "Sunrise",
   "Dhuhr": "Dhuhr",
   "Asr": "Asr",
   "Maghrib": "Maghrib",
@@ -37,8 +38,11 @@
   "Choose-your-city": "Write The Name Of Your City",
 
   "Contact-us": "To contact us",
-  "Name": "Your Full Name",
+  "Name": "Your Name",
   "Email": "Your Email Address",
   "Message": "Your Message",
-  "Submit": "Submit"
+  "Submit": "Submit",
+
+  "All-rights-reserved": "All rights reserved .",
+  "ALLAWI": "ALLAWI"
 }

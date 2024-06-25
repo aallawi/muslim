@@ -57,7 +57,7 @@ const Footer = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white border-t-[2px] border-secondary mt-[40px]">
       <div className="max-w-[1200px] mx-auto">
         <div className="flex flex-wrap justify-center xl:items-stretch flex-row items-center xl:justify-start gap-[20px] p-[20px]">
           {/* logo */}
@@ -189,8 +189,16 @@ const Footer = () => {
           <ToastContainer />
         </div>
 
-        <p className="text-center text-secondary font-[600] py-[10px] border-t border-solid border-secondary">
-          &copy; 2024 Allawi. All rights reserved.
+        <p className="text-center text-secondary text-[15px] font-[600] py-[10px] border-t border-solid border-secondary">
+          <a
+            href="https://allawi.netlify.app/"
+            target="_blank"
+            rel="Ahmed Allawi"
+            className=" text-primary font-[700]"
+          >
+            {t("ALLAWI")}
+          </a>{" "}
+          &copy; {t("All-rights-reserved")}
         </p>
       </div>
     </div>

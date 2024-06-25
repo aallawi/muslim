@@ -16,6 +16,8 @@ const Adhkar = () => {
   const [ehikr, setEhikr] = useState();
   const [counters, setCounters] = useState({});
   const [currentAudioIndex, setCurrentAudioIndex] = useState(null);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
 
   const audioRefs = useRef([]);
 
@@ -27,6 +29,11 @@ const Adhkar = () => {
   const handlePlay = (src, index) => {
     setPlaying((prevPlaying) => (prevPlaying === src ? null : src));
     setCurrentAudioIndex(index);
+  };
+
+  const handlePlaybackRateChange = (event) => {
+    const newRate = parseFloat(event.target.value);
+    setPlaybackRate(newRate);
   };
 
   useEffect(() => {
@@ -49,7 +56,7 @@ const Adhkar = () => {
     if (currentAudioIndex !== null && audioRefs.current[currentAudioIndex]) {
       audioRefs.current[currentAudioIndex].scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: "start",
       });
     }
   }, [currentAudioIndex]);
@@ -81,6 +88,7 @@ const Adhkar = () => {
       } else {
         setCurrentAudioIndex(null);
         setPlaying(null);
+        setIsAutoPlaying(false);
       }
     }
   };
@@ -89,7 +97,13 @@ const Adhkar = () => {
     if (ehikr.array.length > 0) {
       setCurrentAudioIndex(0);
       setPlaying(ehikr.array[0].audio);
+      setIsAutoPlaying(true);
     }
+  };
+
+  const handleAutoPause = () => {
+    setPlaying(null);
+    setIsAutoPlaying(false);
   };
 
   const isCompleted = (id) =>
@@ -137,17 +151,42 @@ const Adhkar = () => {
           ref={sectionRef}
           className="my-[40px] border-secondary border-solid border-[2px] rounded-[10px] overflow-hidden relative"
         >
-          <div className="h-[70px] text-center font-[600] py-[10px] text-[30px] bg-primary border-secondary border-solid border-b-[2px] relative">
-            {currentLanguage === "en" ? ehikr.categoryEng : ehikr.category}
+          <div className="flex justify-center items-center text-center bg-primary border-secondary border-solid border-b-[2px]">
+            <h1 className="p-[10px] flex-1 order-1 text-[20px] md:text-[30px] font-[600]">
+              {currentLanguage === "en" ? ehikr.categoryEng : ehikr.category}
+            </h1>
             {ehikr.array[0].audio && (
-              <button
-                onClick={handleAutoStart}
+              <div
                 className={`${
-                  currentLanguage == "en" ? "left-[10px]" : "right-[10px]"
-                } absolute bottom-[15px] w-fit h-[40px] text-[20px] font-[600] bg-indigo-400 rounded-[15px] px-[20px] cursor-pointer flex justify-center items-center`}
+                  currentLanguage === "en" ? "border-r-[2px]" : "border-l-[2px]"
+                } p-[10px] border-black `}
               >
-                {t("Auto-play")}
-              </button>
+                <button
+                  onClick={isAutoPlaying ? handleAutoPause : handleAutoStart}
+                  className="outline-none border-none bg-[#efefef] px-[30px] py-[5px] text-[16px] rounded-[4px] font-[600] mb-[10px] hover:bg-[#0075ff] hover:text-white"
+                >
+                  {t("Auto-play")}
+                </button>
+                <div className=" text-[10px] flex flex-col">
+                  <div className="flex items-center justify-center gap-[5px]">
+                    <span>0.5X</span>
+                    <input
+                      className="max-w-[80px] md:max-w-[120px]"
+                      type="range"
+                      id="playbackRate"
+                      value={playbackRate}
+                      onChange={handlePlaybackRateChange}
+                      min="0.5"
+                      max="2.5"
+                      step="0.1"
+                    />
+                    <span>2.5X</span>
+                  </div>
+                  <span className="bg-[#efefef] w-[35px] h-[35px] m-auto rounded-full flex justify-center items-center">
+                    {playbackRate}x
+                  </span>
+                </div>
+              </div>
             )}
           </div>
           <div>
@@ -191,17 +230,20 @@ const Adhkar = () => {
                         increaseCounter={() => increaseCounter(item.id)}
                         repeatCount={item.count}
                         onEnd={handleEnd}
+                        playbackRate={playbackRate}
                       />
                     )}
                   </div>
                 </div>
 
                 {/* text */}
-                <div className="flex flex-col items-center justify-center flex-1 text-secondary">
-                  <p className="textAra rtl pr-[10px] text-right">
+                <div className="flex flex-col items-center justify-center flex-1 text-secondary text-[18px] md:text-[20px]">
+                  <p className="textAra rtl  pr-[10px] text-right leading-[45px] md:leading-[55px]">
                     {item.text}
                   </p>
-                  <p>{currentLanguage === "en" && item.textEng}</p>
+                  <p className="leading-[30px] md:leading-[40px] mt-[20px]">
+                    {currentLanguage === "en" && item.textEng}
+                  </p>
                 </div>
               </div>
             ))}

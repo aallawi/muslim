@@ -8,8 +8,6 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import allMethod from "../assets/data/allMethod";
 
-// import { FaSearchLocation } from "react-icons/fa";
-
 const Manually = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -17,14 +15,11 @@ const Manually = () => {
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countryCode, setCountryCode] = useState("");
-
   const [selectedCity, setSelectedCity] = useState(null);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(null);
 
-  // ==================================================== Countries ==============================================
-
-  // Fetch All Countries
   const fetchCountries = async () => {
     const response = await axios.get(
       "https://country-state-city-search-rest-api.p.rapidapi.com/allcountries",
@@ -40,14 +35,12 @@ const Manually = () => {
     return response.data;
   };
 
-  // Use useQuery To Get All Country
   const {
     data: countries,
     error: countriesError,
     isLoading: countriesLoading,
   } = useQuery("countries", fetchCountries);
 
-  // تعديل الخيارات لتتوافق مع react-select
   const countryOptions = countries?.map((country) => ({
     value: country.isoCode,
     label: country.name,
@@ -58,8 +51,6 @@ const Manually = () => {
     setCountryCode(country.isoCode);
     setSelectedCountry(country);
   };
-
-  // ==================================================== Cities ==============================================
 
   const fetchCities = async (countryCode) => {
     const response = await axios.get(
@@ -76,7 +67,6 @@ const Manually = () => {
     return response.data;
   };
 
-  // Use useQuery To Get All Cities
   const {
     data: cities,
     error: citiesError,
@@ -97,7 +87,10 @@ const Manually = () => {
     setSelectedCity(city.name);
     setLongitude(city.longitude);
     setLatitude(city.latitude);
-    localStorage.setItem("selectedCity", city.name);
+    localStorage.setItem(
+      "selectedCity",
+      `${selectedCountry.name} - ${city.name}`
+    );
     localStorage.setItem("latitude", city.latitude);
     localStorage.setItem("longitude", city.longitude);
   };
@@ -107,13 +100,13 @@ const Manually = () => {
       value: method.value,
       label: currentLanguage === "en" ? method.labelEn : method.labelAr,
     }));
-  }, [allMethod, currentLanguage]);
+  }, [currentLanguage]);
 
   const HandelSelectedMethod = (selectedOption) => {
-    localStorage.setItem(selectedOption.value);
+    setSelectedMethod(selectedOption);
+    localStorage.setItem("method", selectedOption.value);
   };
 
-  // إذا حدث خطأ في استرجاع البيانات
   if (countriesLoading || citiesLoading)
     return (
       <div className="flex items-center justify-center h-screen mx-auto">
@@ -128,7 +121,7 @@ const Manually = () => {
     return <div>حدث خطأ ما أثناء جلب قائمة المدن: {citiesError.message}</div>;
 
   const searchHandler = (event) => {
-    if ((event.type == "click" || event.key == "Enter") && selectedCity) {
+    if ((event.type === "click" || event.key === "Enter") && selectedCity) {
       navigate("/");
     }
   };
@@ -137,7 +130,7 @@ const Manually = () => {
     <div className="pt-[100px]">
       <div className="max-w-[700px] min-h-[500px] md:mx-auto mx-3 mb-[30px]">
         <div className="h-[400px]">
-          <div className="country">
+          <div className="country mb-[20px]">
             <Select
               value={
                 selectedCountry
@@ -156,8 +149,16 @@ const Manually = () => {
           </div>
 
           {selectedCountry && (
-            <div className="city">
+            <div className="city mb-[20px]">
               <Select
+                value={
+                  selectedCity
+                    ? {
+                        value: selectedCity,
+                        label: selectedCity,
+                      }
+                    : null
+                }
                 placeholder={t("Choose-your-city")}
                 onChange={HandelSelectedCity}
                 options={cityOptions}
@@ -167,15 +168,21 @@ const Manually = () => {
           )}
           {selectedCity && (
             <>
-              <div className="city">
+              <div className="calculate mb-[20px]">
                 <Select
-                  className=" mb-[40px]"
+                  className="mb-[40px]"
+                  value={selectedMethod}
                   placeholder={t("Choose-how-to-calculate-prayer-times")}
                   onChange={HandelSelectedMethod}
                   options={allOptions}
                 />
               </div>
-              <button onClick={searchHandler}>{t("Submit")}</button>
+              <button
+                onClick={searchHandler}
+                className=" bg-primary hover:bg-primary-hover px-[30px] py-[5px] rounded-[6px] text-center"
+              >
+                {t("Submit")}
+              </button>
             </>
           )}
         </div>

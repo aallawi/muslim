@@ -4,24 +4,43 @@ import { CgMenu, CgClose } from "react-icons/cg";
 import { useTranslation } from "react-i18next";
 import kaaba from "../assets/images/logo.png";
 import { IoIosRadio } from "react-icons/io";
+import i18next from "i18next";
 
 const Header = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const currentLanguage = i18next.language;
 
   const [show, setShow] = useState("top");
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
 
   const changePath = (path) => {
     navigate(`${path}`);
-    setMobileMenu(false),
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+    setMobileMenu(false);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY;
+      const percentage = (scrollTop / scrollHeight) * 100;
+      setScrollPercentage(percentage);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const controlNavbar = useCallback(() => {
     if (window.scrollY > 200) {
@@ -36,7 +55,6 @@ const Header = () => {
     setLastScrollY(window.scrollY);
   }, [lastScrollY, mobileMenu]);
 
-  // إضافة وإزالة مستمع التمرير
   useEffect(() => {
     window.addEventListener("scroll", controlNavbar);
     return () => {
@@ -55,8 +73,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed w-full h-[60px] z-[99] transition-all duration-1000 select-none bg-white text-secondary shadow-md ${
-        // show === "hide" && "translate-y-[-60px]"
+      className={`fixed w-full h-[63px] z-[99] transition-all duration-1000 select-none bg-white text-secondary shadow-md ${
         show === "top"
           ? "bg-white"
           : show === "show"
@@ -82,7 +99,7 @@ const Header = () => {
             mobileMenu
               ? "absolute left-0 top-[60px] w-full h-auto flex flex-col gap-[20px] justify-start p-[20px] transition-all duration-300 bg-white text-[20px] text-black text-center"
               : "hidden md:flex md:items-center"
-          } `}
+          }`}
         >
           <li
             className={`mx-[15px] font-[800] cursor-pointer text-[20px] ${isActive(
@@ -178,6 +195,17 @@ const Header = () => {
           )}
         </ul>
       </div>
+
+      <span
+        className={`${
+          currentLanguage === "en" ? "left-0" : "right-0"
+        } w-full h-[3px] absolute bottom-0 `}
+        style={{
+          background: `linear-gradient(to ${`${
+            currentLanguage === "en" ? "right" : "left"
+          }`}, #FFC700 ${scrollPercentage}%, transparent ${scrollPercentage}%)`,
+        }}
+      />
     </header>
   );
 };

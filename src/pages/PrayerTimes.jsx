@@ -6,6 +6,7 @@ import childPray from "../assets/images/child-pray.webp";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import allMethod from "../assets/data/allMethod";
+import { PuffLoader } from "react-spinners";
 
 const PrayerTimes = () => {
   const navigate = useNavigate();
@@ -19,11 +20,12 @@ const PrayerTimes = () => {
 
   const [latitude, setLatitude] = useState(localStorage.getItem("latitude"));
   const [longitude, setLongitude] = useState(localStorage.getItem("longitude"));
-  const [method, setMethod] = useState(localStorage.getItem("method") || 5); // تم تعديل القيمة الافتراضية إلى null
+  const [method, setMethod] = useState(localStorage.getItem("method") || 5);
   const [city, setCity] = useState(localStorage.getItem("selectedCity"));
   const [data, setData] = useState(null);
   const [allTimes, setAllTimes] = useState({});
   const [holiday, setHoliday] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const monthsArabic = [
     "يناير",
@@ -39,7 +41,6 @@ const PrayerTimes = () => {
     "نوفمبر",
     "ديسمبر",
   ];
-
   const allOptions = useMemo(() => {
     return allMethod.map((method) => ({
       value: method.value,
@@ -57,8 +58,8 @@ const PrayerTimes = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
+          !longitude && setLatitude(position.coords.latitude);
+          !latitude && setLongitude(position.coords.longitude);
         },
         (error) => {
           console.error("Error getting geolocation:", error);
@@ -72,6 +73,7 @@ const PrayerTimes = () => {
   // Fetch city data
   useEffect(() => {
     if (latitude && longitude && method) {
+      setLoading(true);
       axios
         .get(
           `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${method}`
@@ -80,10 +82,14 @@ const PrayerTimes = () => {
           const result = response.data;
           setData(result.data);
           setAllTimes(result.data[day].timings);
-          setCity(data[day].meta.timezone.replace(/^[^/]+\//, ""));
+          !city &&
+            setCity(result.data[day].meta.timezone.replace(/^[^/]+\//, ""));
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [year, month, latitude, longitude, day, method]);
@@ -110,9 +116,11 @@ const PrayerTimes = () => {
 
   // Use useMemo to filter only five prayer times
   const prayerTimes = useMemo(() => {
-    return ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].map((prayer) => ({
-      [prayer]: convertTimeFormat(allTimes[prayer]),
-    }));
+    return ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
+      (prayer) => ({
+        [prayer]: convertTimeFormat(allTimes[prayer]),
+      })
+    );
   }, [allTimes]);
 
   const changePath = (path) => {
@@ -130,55 +138,47 @@ const PrayerTimes = () => {
         <h2 className="mb-[30px] text-center text-[40px] font-[700]">
           {t("prayer-times")}
         </h2>
-        <button
-          className=" bg-green-400 p-[10px] mb-[20px] text-[23px] font-[600]"
-          onClick={() => changePath("/city")}
-        >
-          {t("Choose-the-location-manually")}
-        </button>
-        <div>
-          <Select
-            className=" mb-[40px]"
-            placeholder={t("Choose-how-to-calculate-prayer-times")}
-            onChange={HandelSelectedMethod}
-            options={allOptions}
-          />
-        </div>
-        <div className="flex justify-around font-[600] text-[18px] mb-[40px]">
-          {/* city - day */}
-          <div className="">
-            <h2 className="mb-[15px]">{city}</h2>
-            <h2>
-              {currentLanguage === "en"
-                ? data?.[day]?.date?.gregorian?.weekday.en
-                : data?.[day]?.date?.hijri?.weekday.ar}
-            </h2>
-          </div>
-          {/* date */}
-          <div className="">
-            <h2 className="mb-[15px]">
-              {currentLanguage === "en" ? (
-                data?.[day]?.date?.readable
-              ) : (
-                <div className="flex gap-1">
-                  <span>{data?.[day]?.date?.gregorian?.day}</span>
-                  <span>{monthsArabic[month - 1]}</span>
-                  <span>{year}</span>
-                </div>
-              )}
-            </h2>
-            <h2 className="flex gap-1">
-              <span>{data?.[day]?.date?.hijri?.day}</span>
 
-              <span>
-                {currentLanguage === "en"
-                  ? data?.[day]?.date?.hijri?.month.en
-                  : data?.[day]?.date?.hijri?.month.ar}
-              </span>
-              <span>{data?.[day]?.date?.hijri?.year}</span>
-            </h2>
+        {loading ? (
+          <div className="flex items-center justify-center h-screen mx-auto">
+            <PuffLoader color="#38bdf8" size={100} speedMultiplier={3} />
           </div>
-        </div>
+        ) : (
+          <div className="flex justify-around font-[600] text-[18px] mb-[40px]">
+            {/* city - day */}
+            <div className="">
+              <h2 className="mb-[15px]">{city}</h2>
+              <h2>
+                {currentLanguage === "en"
+                  ? data?.[day]?.date?.gregorian?.weekday.en
+                  : data?.[day]?.date?.hijri?.weekday.ar}
+              </h2>
+            </div>
+            {/* date */}
+            <div className="">
+              <h2 className="mb-[15px]">
+                {currentLanguage === "en" ? (
+                  data?.[day]?.date?.readable
+                ) : (
+                  <div className="flex gap-1">
+                    <span>{data?.[day]?.date?.gregorian?.day}</span>
+                    <span>{monthsArabic[month - 1]}</span>
+                    <span>{year}</span>
+                  </div>
+                )}
+              </h2>
+              <h2 className="flex gap-1">
+                <span>{data?.[day]?.date?.hijri?.day}</span>
+                <span>
+                  {currentLanguage === "en"
+                    ? data?.[day]?.date?.hijri?.month.en
+                    : data?.[day]?.date?.hijri?.month.ar}
+                </span>
+                <span>{data?.[day]?.date?.hijri?.year}</span>
+              </h2>
+            </div>
+          </div>
+        )}
 
         {/* holidays */}
         {holiday && (
@@ -198,6 +198,23 @@ const PrayerTimes = () => {
             <span className="text-red-500">{timeRemaining}</span>
           </h2>
         </div> */}
+      </div>
+
+      <div className="flex items-center justify-around mb-[30px]">
+        <button
+          className=" bg-green-400 p-[10px] text-[20px] font-[600] rounded-[6px] px-[40px]"
+          onClick={() => changePath("/location")}
+        >
+          {t("Choose-the-location-manually")}
+        </button>
+        <div>
+          <Select
+            className=""
+            placeholder={t("Choose-how-to-calculate-prayer-times")}
+            onChange={HandelSelectedMethod}
+            options={allOptions}
+          />
+        </div>
       </div>
 
       {/* part two */}

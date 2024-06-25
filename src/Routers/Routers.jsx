@@ -17,7 +17,7 @@ export const Routers = () => {
         <div className="container mx-auto">
           <Routes>
             <Route index element={<PrayerTimes />} />
-            <Route path="/city" element={<Manually />} />
+            <Route path="/location" element={<Manually />} />
             <Route path="/adhkar" element={<Adhkar />} />
             <Route path="/quran" element={<Quran />} />
             <Route path="/quran/:surahId" element={<Surah />} />

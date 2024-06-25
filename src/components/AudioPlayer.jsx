@@ -8,23 +8,27 @@ const AudioPlayer = ({
   onEnd,
   repeatCount,
   increaseCounter,
+  playbackRate,
 }) => {
   const audioRef = useRef();
   const [playCount, setPlayCount] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     const audio = audioRef.current;
     audio.volume = 0.5;
+    audio.playbackRate = playbackRate;
 
     const handleEnded = () => {
-      increaseCounter(); // استدعاء increaseCounter بعد كل تشغيل
+      increaseCounter();
       if (playCount < repeatCount - 1) {
         setPlayCount((prevCount) => prevCount + 1);
         audio.play();
       } else {
         setPlayCount(0);
+        setCurrentTime(0);
         onPlay(null);
-        onEnd(); // استدعاء onEnd بعد الانتهاء من جميع التكرارات
+        onEnd();
       }
     };
 
@@ -32,21 +36,27 @@ const AudioPlayer = ({
     return () => {
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [playCount, repeatCount, onPlay, onEnd, increaseCounter]);
+  }, [playCount, repeatCount, onPlay, onEnd, increaseCounter, playbackRate]);
 
   useEffect(() => {
     if (isPlaying) {
+      audioRef.current.currentTime = currentTime;
       audioRef.current.play();
     } else {
       audioRef.current.pause();
+      setCurrentTime(audioRef.current.currentTime);
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentTime]);
 
   return (
     <div>
       <audio ref={audioRef} src={sound}></audio>
-      <button onClick={onPlay}>
-        {isPlaying ? <FaPauseCircle size={30} /> : <FaPlayCircle size={30} />}
+      <button onClick={onPlay} className="border-none outline-none ">
+        {isPlaying ? (
+          <FaPauseCircle color="#2c786c" size={45} />
+        ) : (
+          <FaPlayCircle color="blue" size={45} />
+        )}
       </button>
     </div>
   );
