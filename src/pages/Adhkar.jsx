@@ -56,7 +56,7 @@ const Adhkar = () => {
     if (currentAudioIndex !== null && audioRefs.current[currentAudioIndex]) {
       audioRefs.current[currentAudioIndex].scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "center",
       });
     }
   }, [currentAudioIndex]);

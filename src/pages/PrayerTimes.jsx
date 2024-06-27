@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import allMethod from "../assets/data/allMethod";
 import { PuffLoader } from "react-spinners";
+import { MagnifyingGlass } from "react-loader-spinner";
 
 const PrayerTimes = () => {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const PrayerTimes = () => {
   const [city, setCity] = useState(localStorage.getItem("selectedCity"));
   const [data, setData] = useState(null);
   const [allTimes, setAllTimes] = useState({});
+  const [currentTime, setCurrentTime] = useState("");
+  const [nextPrayer, setNextPrayer] = useState(null);
+  const [remainingTime, setRemainingTime] = useState({
+    hours: null,
+    minutes: null,
+  });
   const [holiday, setHoliday] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -97,30 +104,36 @@ const PrayerTimes = () => {
   // Convert time to "hh:mm AM/PM" format
   const convertTimeFormat = (time) => {
     if (!time) return "";
-    const [hour, minute] = time.split(":");
+    const cleanedTime = time.replace(/\s*\([^)]*\)/g, "");
+    const [hour, minute] = cleanedTime.split(":");
     const hourNum = parseInt(hour, 10);
     const suffix = hourNum >= 12 ? "PM" : "AM";
     const formattedHour = hourNum % 12 || 12;
-    return `${formattedHour}:${minute.split(" ")[0]} ${suffix}`;
+    return `${formattedHour}:${minute} ${suffix}`;
   };
 
   // Check for Islamic holidays
   useEffect(() => {
-    if (data?.[day]?.date?.hijri?.holidays) {
-      const holidays = data[day].date.hijri.holidays;
-      if (holidays.length > 0) {
-        setHoliday(holidays.join(" - "));
-      }
+    if (data?.[day]?.date?.hijri?.holidays.length > 0) {
+      setHoliday(data[day].date.hijri.holidays.join(" - "));
     }
   }, [data, day]);
 
   // Use useMemo to filter only five prayer times
   const prayerTimes = useMemo(() => {
-    return ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
-      (prayer) => ({
-        [prayer]: convertTimeFormat(allTimes[prayer]),
-      })
-    );
+    const filteredTimes = [
+      "Fajr",
+      "Sunrise",
+      "Dhuhr",
+      "Asr",
+      "Maghrib",
+      "Isha",
+    ].reduce((acc, prayer) => {
+      acc[prayer] = allTimes[prayer];
+      return acc;
+    }, {});
+
+    return filteredTimes;
   }, [allTimes]);
 
   const changePath = (path) => {
@@ -131,8 +144,81 @@ const PrayerTimes = () => {
     });
   };
 
+  // =================== nextPrayer and remainingTime ==============================
+
+  const timeToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  useEffect(() => {
+    const fetchCurrentTime = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.timezonedb.com/v2.1/get-time-zone?key=K8B8RYWN7UNQ&format=json&by=position&lat=${latitude}&lng=${longitude}`
+        );
+        const formattedTime = response.data.formatted.split(" ")[1].slice(0, 5);
+        setCurrentTime(formattedTime);
+
+        const { nextPrayer, remainingTime } = getNextPrayerTime(
+          formattedTime,
+          prayerTimes
+        );
+        setNextPrayer(nextPrayer);
+        setRemainingTime(remainingTime);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentTime();
+    const intervalId = setInterval(fetchCurrentTime, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [latitude, longitude, prayerTimes]);
+
+  const cleanPrayerTime = (time) => {
+    return time.replace(/\s*\(.*?\)\s*/g, "").trim();
+  };
+
+  const getNextPrayerTime = (currentTime, prayerTimes) => {
+    const currentMinutes = timeToMinutes(currentTime);
+
+    let nextPrayer = null;
+    let remainingTime = Infinity;
+
+    for (const [prayerName, prayerTime] of Object.entries(prayerTimes)) {
+      const cleanedTime = cleanPrayerTime(prayerTime);
+      const prayerMinutes = timeToMinutes(cleanedTime);
+
+      if (prayerMinutes > currentMinutes) {
+        const timeDiff = prayerMinutes - currentMinutes;
+        if (timeDiff < remainingTime) {
+          nextPrayer = prayerName;
+          remainingTime = timeDiff;
+        }
+      }
+    }
+
+    if (!nextPrayer) {
+      nextPrayer = "Fajr";
+      const fajrTime = timeToMinutes(cleanPrayerTime(prayerTimes["Fajr"]));
+      remainingTime = 1440 - currentMinutes + fajrTime; // 1440 دقيقة في اليوم
+    }
+
+    const hours = Math.floor(remainingTime / 60);
+    const minutes = remainingTime % 60;
+
+    return {
+      nextPrayer,
+      remainingTime: { hours, minutes },
+    };
+  };
+
   return (
-    <div className="min-h-screen pt-[80px] overflow-hidden">
+    <div className="min-h-screen pt-[80px] overflow-hidden mx-[20px]">
       {/* part One */}
       <div className="flex flex-col justify-center">
         <h2 className="mb-[30px] text-center text-[40px] font-[700]">
@@ -144,7 +230,7 @@ const PrayerTimes = () => {
             <PuffLoader color="#38bdf8" size={100} speedMultiplier={3} />
           </div>
         ) : (
-          <div className="flex justify-around font-[600] text-[18px] mb-[40px]">
+          <div className="flex justify-around font-[600] text-[18px] mb-[20px]">
             {/* city - day */}
             <div className="">
               <h2 className="mb-[15px]">{city}</h2>
@@ -188,26 +274,51 @@ const PrayerTimes = () => {
         )}
 
         {/* timeRemaining */}
-        {/* <div className="text-center my-[40px] ">
-          <p className="mb-[20px] text-[25px] font-[600] animate-pulse">
-            {t("next-prayer")}
-            <span>{nextPrayer}</span>
-          </p>
-          <h2 className="flex justify-center gap-[15px] text-[30px]">
-            {t("remaining-time")}
-            <span className="text-red-500">{timeRemaining}</span>
-          </h2>
-        </div> */}
+        {currentTime && (
+          <h1 className="text-center font-[800]">
+            {t("Time-Now")} {convertTimeFormat(currentTime)}
+          </h1>
+        )}
+        {nextPrayer && remainingTime ? (
+          <div className="text-center my-[20px] select-none">
+            <p className="mb-[10px] text-[20px] font-[600] animate-pulse">
+              {t("next-prayer")}
+              <span>{t(nextPrayer)}</span>
+            </p>
+
+            <h2 className="flex justify-center gap-[15px] text-[18px]">
+              {t("remaining-time")}
+              <span className="text-red-500 font-[700]">
+                {remainingTime.hours === 0
+                  ? `${remainingTime.minutes} ${t(
+                      remainingTime.minutes > 1 ? "minutes" : "minute"
+                    )}`
+                  : `${remainingTime.hours} ${t(
+                      remainingTime.hours > 1 ? "hours" : "hour"
+                    )} ${t("and")} ${remainingTime.minutes} ${t(
+                      remainingTime.minutes > 1 ? "minutes" : "minute"
+                    )}`}
+              </span>
+            </h2>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center my-[10px]">
+            <MagnifyingGlass
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="magnifying-glass-loading"
+              wrapperStyle={{}}
+              wrapperClass="magnifying-glass-wrapper"
+              glassColor="#c0efff"
+              color="#e15b64"
+            />
+          </div>
+        )}
       </div>
 
-      <div className="flex items-center justify-around mb-[30px]">
-        <button
-          className=" bg-green-400 p-[10px] text-[20px] font-[600] rounded-[6px] px-[40px]"
-          onClick={() => changePath("/location")}
-        >
-          {t("Choose-the-location-manually")}
-        </button>
-        <div>
+      <div className="flex flex-col gap-3 lg:flex-row justify-around mb-[30px]">
+        <div className="flex-1">
           <Select
             className=""
             placeholder={t("Choose-how-to-calculate-prayer-times")}
@@ -215,12 +326,20 @@ const PrayerTimes = () => {
             options={allOptions}
           />
         </div>
+        <div className="flex-1">
+          <button
+            className="bg-green-400 text-[18px] font-[600] rounded-[6px] px-[20px] py-[5px] w-full h-full"
+            onClick={() => changePath("/location")}
+          >
+            {t("Choose-the-location-manually")}
+          </button>
+        </div>
       </div>
 
       {/* part two */}
-      <div className="flex flex-col items-center justify-center gap-5 md:flex-row">
+      <div className="flex flex-col md:justify-between md:gap-[20px] md:flex-row">
         {/* img */}
-        <div className=" hidden xl:block flex-1 md:h-[310px] w-[80%] max-w-[500px]">
+        <div className="flex-1 hidden xl:block">
           <img
             src={childPray}
             className="object-cover h-full w-full rounded-[6px]"
@@ -229,24 +348,26 @@ const PrayerTimes = () => {
         </div>
 
         {/* prayer times */}
-        <div className="flex-1 py-[16px] bg-primary text-secondary rounded-[6px] w-[80%] max-w-[500px]">
+        <div className="flex-1 py-[16px] bg-primary text-secondary rounded-[6px] max-w-[500px] md:max-w-full">
           <div className="flex px-[20px] justify-between font-[700] text-[18px] pb-[16px] border-b-[2px] border-secondary">
             <div className="">{t("name-of-salat")}</div>
             <div className="">{t("azan-time")}</div>
           </div>
-          {prayerTimes.map((time, index) => (
-            <div
-              key={index}
-              className={`flex justify-between font-[700] text-[16px] px-[20px] ${
-                index === prayerTimes.length - 1
-                  ? "pt-[12px]"
-                  : "py-[12px] border-b border-solid border-secondary"
-              }`}
-            >
-              <div>{t(Object.keys(time)[0])}</div>
-              <div>{Object.values(time)[0]}</div>
-            </div>
-          ))}
+          {Object.entries(prayerTimes).map(
+            ([prayerName, prayerTime], index) => (
+              <div
+                key={index}
+                className={`flex justify-between font-[700] text-[16px] px-[20px] ${
+                  index === Object.keys(prayerTimes).length - 1
+                    ? "pt-[12px]"
+                    : "py-[12px] border-b border-solid border-secondary"
+                }`}
+              >
+                <div>{t(prayerName)}</div>
+                <div>{convertTimeFormat(prayerTime)}</div>
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>
@@ -254,53 +375,3 @@ const PrayerTimes = () => {
 };
 
 export default PrayerTimes;
-
-// -------------------------------------------------------
-// const timestamp = data?.[day].date.timestamp;
-// console.log(new Date(timestamp * 1000).toUTCString());
-
-// -----------------------------------------------------
-// Calculate time remaining until the next prayer
-// const calculateTimeRemaining = () => {
-//   const now = new Date();
-//   const times = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
-//   for (let i = 0; i < times.length; i++) {
-//     const prayerTime = allTimes[times[i]];
-//     if (prayerTime) {
-//       const [hours, minutes] = prayerTime.split(":").map(Number);
-//       const prayerDate = new Date(
-//         now.getFullYear(),
-//         now.getMonth(),
-//         now.getDate(),
-//         hours,
-//         minutes
-//       );
-//       if (prayerDate > now) {
-//         const diff = prayerDate - now;
-//         const diffHours = Math.floor(diff / (1000 * 60 * 60));
-//         const diffMinutes = Math.floor(
-//           (diff % (1000 * 60 * 60)) / (1000 * 60)
-//         );
-//         setNextPrayer(times[i]);
-//         setTimeRemaining(`${diffHours} ساعة و ${diffMinutes} دقيقة`);
-//         return;
-//       }
-//     }
-//   }
-//   // If no upcoming prayer today, consider tomorrow's Fajr
-//   const [fajrHours, fajrMinutes] = allTimes["Fajr"]
-//     ? allTimes["Fajr"].split(":").map(Number)
-//     : [0, 0];
-//   const tomorrowFajr = new Date(
-//     now.getFullYear(),
-//     now.getMonth(),
-//     now.getDate() + 1,
-//     fajrHours,
-//     fajrMinutes
-//   );
-//   const diff = tomorrowFajr - now;
-//   const diffHours = Math.floor(diff / (1000 * 60 * 60));
-//   const diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-//   setNextPrayer("Fajr");
-//   setTimeRemaining(`${diffHours} ساعة و ${diffMinutes} دقيقة`);
-// };
