@@ -8,6 +8,7 @@ import Select from "react-select";
 import allMethod from "../assets/data/allMethod";
 import { PuffLoader } from "react-spinners";
 import { MagnifyingGlass } from "react-loader-spinner";
+import { AiTwotoneClockCircle } from "react-icons/ai";
 
 const PrayerTimes = () => {
   const navigate = useNavigate();
@@ -275,18 +276,19 @@ const PrayerTimes = () => {
 
         {/* timeRemaining */}
         {currentTime && (
-          <h1 className="text-center font-[800]">
-            {t("Time-Now")} {convertTimeFormat(currentTime)}
+          <h1 className="flex items-center gap-[12px] w-fit mx-auto font-[800] mt-[10px] bg-green-400 rounded-[6px] px-[30px] py-[8px]">
+            <AiTwotoneClockCircle />
+            {t("Current-Time")} {convertTimeFormat(currentTime)}
           </h1>
         )}
         {nextPrayer && remainingTime ? (
           <div className="text-center my-[20px] select-none">
-            <p className="mb-[10px] text-[20px] font-[600] animate-pulse">
+            <p className="mb-[15px] text-[20px] font-[600] animate-pulse">
               {t("next-prayer")}
               <span>{t(nextPrayer)}</span>
             </p>
 
-            <h2 className="flex justify-center gap-[15px] text-[18px]">
+            <h2 className="flex justify-center gap-[10px] text-[16px] md:text-[18px]">
               {t("remaining-time")}
               <span className="text-red-500 font-[700]">
                 {remainingTime.hours === 0
@@ -337,7 +339,7 @@ const PrayerTimes = () => {
       </div>
 
       {/* part two */}
-      <div className="flex flex-col md:justify-between md:gap-[20px] md:flex-row">
+      <div className="flex flex-col items-center md:items-stretch md:justify-between md:gap-[20px] md:flex-row h-[353px]">
         {/* img */}
         <div className="flex-1 hidden xl:block">
           <img
@@ -348,7 +350,7 @@ const PrayerTimes = () => {
         </div>
 
         {/* prayer times */}
-        <div className="flex-1 py-[16px] bg-primary text-secondary rounded-[6px] max-w-[500px] md:max-w-full">
+        <div className="flex-1 pt-[16px] bg-primary text-secondary rounded-[6px] w-full md:max-w-full">
           <div className="flex px-[20px] justify-between font-[700] text-[18px] pb-[16px] border-b-[2px] border-secondary">
             <div className="">{t("name-of-salat")}</div>
             <div className="">{t("azan-time")}</div>
@@ -359,8 +361,12 @@ const PrayerTimes = () => {
                 key={index}
                 className={`flex justify-between font-[700] text-[16px] px-[20px] ${
                   index === Object.keys(prayerTimes).length - 1
-                    ? "pt-[12px]"
+                    ? "py-[12px] rounded-b-[6px]"
                     : "py-[12px] border-b border-solid border-secondary"
+                } ${
+                  prayerName === nextPrayer
+                    ? " bg-green-400"
+                    : "bg-primary text-secondary"
                 }`}
               >
                 <div>{t(prayerName)}</div>

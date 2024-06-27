@@ -320,7 +320,7 @@ const allAdhkar = [
   {
     id: 2,
     category: "أذكــــار النـــــــــوم",
-    categoryEng: "Adhkar befor Sleep",
+    categoryEng: "Adhkar before Sleep",
     array: [
       {
         id: 1,
@@ -492,7 +492,7 @@ const allAdhkar = [
   {
     id: 5,
     category: "دعــاء الاسـتـفتــاح",
-    categoryEng: "Opening duaa",
+    categoryEng: "Opening Duaa",
     array: [
       {
         id: 1,
@@ -541,7 +541,7 @@ const allAdhkar = [
   {
     id: 6,
     category: "دعــــاء الـركــــــوع",
-    categoryEng: "Duaa During Bowing",
+    categoryEng: "Duaa during Bowing",
     array: [
       {
         id: 1,
@@ -581,7 +581,7 @@ const allAdhkar = [
   {
     id: 7,
     category: "دعاء الرفع من الركوع",
-    categoryEng: "Duaa Upon Rising from Bowing",
+    categoryEng: "Duaa upon Rising from Bowing",
     array: [
       {
         id: 1,
@@ -608,7 +608,7 @@ const allAdhkar = [
   {
     id: 8,
     category: "دعـــاء الـسـجـــــود",
-    categoryEng: "Duaa During Prostration",
+    categoryEng: "Duaa during Prostration",
     array: [
       {
         id: 1,
