@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import axios from "axios";
@@ -56,10 +56,10 @@ const PrayerTimes = () => {
     }));
   }, [allMethod, currentLanguage]);
 
-  const HandelSelectedMethod = (selectedOption) => {
+  const HandelSelectedMethod = useCallback((selectedOption) => {
     setMethod(selectedOption.value);
     localStorage.setItem("method", selectedOption.value);
-  };
+  }, []);
 
   // Set geolocation coordinates
   useEffect(() => {
@@ -137,13 +137,16 @@ const PrayerTimes = () => {
     return filteredTimes;
   }, [allTimes]);
 
-  const changePath = (path) => {
-    navigate(path);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  const changePath = useCallback(
+    (path) => {
+      navigate(path);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },
+    [navigate]
+  );
 
   // =================== nextPrayer and remainingTime ==============================
 
