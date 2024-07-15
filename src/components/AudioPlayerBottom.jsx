@@ -103,7 +103,11 @@ const AudioPlayerBottom = ({ audioScource, blockClass, setAudioClass }) => {
       <div className="relative flex justify-between">
         <span
           className="absolute z-[3] t-0 w-[15px] h-[15px] transform -translate-y-1/2 bg-blue-500 rounded-full cursor-pointer"
-          style={{ right: `${dotePosition}%` }}
+          style={{
+            ...(currentLanguage === "en"
+              ? { left: `${dotePosition}%` }
+              : { right: `${dotePosition}%` }),
+          }}
         />
         <span
           className="absolute h-[4px] bg-blue-500 cursor-pointer"
@@ -111,7 +115,7 @@ const AudioPlayerBottom = ({ audioScource, blockClass, setAudioClass }) => {
             width: `${progressWidth}%`,
             right: 0,
             top: "-2px",
-            direction: "rtl",
+            ...(currentLanguage === "en" ? { left: 0 } : { right: 0 }),
           }}
         />
       </div>

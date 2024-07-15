@@ -202,6 +202,9 @@ const Surah = () => {
               </div>
             )
         )}
+        <div className="pt-[30px] textAra text-[25px] leading-[60px]">
+          {t(t("end"))}
+        </div>
       </div>
       <AudioPlayerBottom
         audioScource={audioScource}
