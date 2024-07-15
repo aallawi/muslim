@@ -27,7 +27,7 @@ const ScrollToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-[30px] h-[50px] w-[50px] rounded-full border-none cursor-pointer animate-bounce ${
+          className={`fixed bottom-[80px] h-[50px] w-[50px] rounded-full border-none cursor-pointer animate-bounce ${
             currentLanguage === "en" ? "left-[30px]" : "right-[30px]"
           }`}
         >

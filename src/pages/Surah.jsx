@@ -1,3 +1,4 @@
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import axios from "axios";
@@ -6,12 +7,22 @@ import AyahImg from "../assets/images/auah1.png";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { PuffLoader } from "react-spinners";
+import Select from "react-select";
+import allSheikh from "../assets/data/allSheikh";
+import AudioPlayerBottom from "../components/AudioPlayerBottom";
 
 const Surah = () => {
   const { surahId } = useParams();
 
   const { t } = useTranslation();
   const currentLanguage = i18next.language;
+
+  const [selectedSheikh, setSelectedSheikh] = useState(
+    localStorage.getItem("Sheikh") || "https://server7.mp3quran.net/basit"
+  );
+  const [numberOfSurah, setNumberOfSurah] = useState();
+  const [audioScource, setAudioScource] = useState();
+  const [audioClass, setAudioClass] = useState(false);
 
   const fetchOneSurah = async () => {
     try {
@@ -32,6 +43,39 @@ const Surah = () => {
     ["surah", surahId],
     fetchOneSurah
   );
+
+  const allOptions = useMemo(() => {
+    return allSheikh.map((sheikh) => ({
+      value: sheikh.value,
+      label: currentLanguage === "en" ? sheikh.labelEn : sheikh.labelAr,
+    }));
+  }, [currentLanguage]);
+
+  const handleSelectedSheikh = useCallback((selectedOption) => {
+    setSelectedSheikh(selectedOption.value);
+    localStorage.setItem("Sheikh", selectedOption.value);
+  }, []);
+
+  const padNumber = (num) => {
+    const str = num.toString();
+    if (str.length === 1) {
+      return "00" + str;
+    } else if (str.length === 2) {
+      return "0" + str;
+    } else {
+      return str;
+    }
+  };
+
+  useEffect(() => {
+    const paddedNumber = padNumber(surahId);
+    setNumberOfSurah(paddedNumber);
+  }, []);
+
+  const handlePlay = () => {
+    setAudioClass(true);
+    setAudioScource(`${selectedSheikh}/${numberOfSurah}.mp3`);
+  };
 
   if (isLoading) {
     return (
@@ -66,6 +110,21 @@ const Surah = () => {
           <p className="text-primary font-[500]">
             {t(data.dataEng?.revelationType)}
           </p>
+        </div>
+
+        <div className="flex justify-between gap-[20px]">
+          <Select
+            className="flex-[2]"
+            placeholder={t("Choose-your-favorite-reader")}
+            onChange={handleSelectedSheikh}
+            options={allOptions}
+          />
+          <button
+            className="flex-1 font-[800] rounded-md bg-primary"
+            onClick={handlePlay}
+          >
+            {t("Play")}
+          </button>
         </div>
 
         {/* besmAllah */}
@@ -144,6 +203,11 @@ const Surah = () => {
             )
         )}
       </div>
+      <AudioPlayerBottom
+        audioScource={audioScource}
+        blockClass={audioClass}
+        setAudioClass={setAudioClass}
+      />
     </div>
   );
 };
