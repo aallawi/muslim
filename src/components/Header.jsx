@@ -20,10 +20,6 @@ const Header = () => {
   const changePath = (path) => {
     navigate(`${path}`);
     setMobileMenu(false);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
 
   useEffect(() => {

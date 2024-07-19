@@ -34,10 +34,6 @@ const Quran = () => {
 
   const changePath = (number) => {
     navigate(`/quran/${number}`);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
 
   return (
